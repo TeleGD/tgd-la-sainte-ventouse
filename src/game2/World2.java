@@ -1,6 +1,5 @@
 package game2;
 
-import general.World;
 import general.ui.Button;
 import general.ui.TGDComponent;
 import general.ui.TGDComponent.OnClickListener;
