@@ -1,4 +1,4 @@
-package game2;
+package games.laSainteVentouse;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -38,7 +38,7 @@ public class Block {
 
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		sprite.rotate((float) angle);
-		g.drawImage(sprite,(float) posx,(float) posy);
+		g.drawImage(sprite,posx,posy);
 		sprite.rotate((float) -angle);
 		g.draw(hitbox);
 	}

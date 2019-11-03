@@ -1,4 +1,4 @@
-package game2;
+package games.laSainteVentouse;
 
 import java.util.ArrayList;
 
@@ -8,11 +8,11 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
-import game2.World2;
-import game2.Tetris;
+
+import games.laSainteVentouse.Tetris;
+import games.laSainteVentouse.World;
 
 public class Player {
 
@@ -51,7 +51,7 @@ public class Player {
 		jumpSpeed=1;
 		this.hitBoxChar=hitBoxChar;
 		try {
-			image=new Image("images/TetrisPolyBridge/player.png");
+			image=new Image("images/laSainteVentouse/player.png");
 		} catch (SlickException e) {
 			// nous donne la trace de l'erreur si on ne peut charger l'image correctement
 			e.printStackTrace();
@@ -115,7 +115,7 @@ public class Player {
 			collapseOn=true;
 			isInJump = false;
 		}
-		tetrisList = World2.getTetrisList();
+		tetrisList = World.getTetrisList();
 
 		for (int k=0; k < tetrisList.size(); k++){
 			if (Math.abs(tetrisList.get(k).getXcentre()-this.x)<32){

@@ -1,4 +1,4 @@
-package game2;
+package games.laSainteVentouse;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,14 +12,14 @@ public class Cloud {
 	private double speed;
 
 	private Image cloud;
-	private String urlCloud = "images/TetrisPolyBridge/cloud.png";
+	private String urlCloud = "images/laSainteVentouse/cloud.png";
 
 	public Cloud() throws SlickException{
-    	cloud = new Image(urlCloud);
+		cloud = new Image(urlCloud);
 
-    	posx = 0;
-    	posy = (int) (50 + Math.random() * 250);
-    	speed=0.075+Math.random()*0.275;
+		posx = 0;
+		posy = (int) (50 + Math.random() * 250);
+		speed=0.075+Math.random()*0.275;
 	}
 
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
@@ -27,7 +27,7 @@ public class Cloud {
 	}
 
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		g.drawImage(cloud,(float) posx,(float) posy);
+		g.drawImage(cloud,posx,posy);
 	}
 
 	public int getPosX(){

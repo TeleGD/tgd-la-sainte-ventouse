@@ -1,4 +1,4 @@
-package game2;
+package games.laSainteVentouse;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -11,13 +11,13 @@ public class Bulle {
 	private int posy;
 
 	private Image bulle;
-	private String urlBulle = "images/TetrisPolyBridge/bulle.png";
+	private String urlBulle = "images/laSainteVentouse/bulle.png";
 
 	public Bulle(int x, int y) throws SlickException{
-    	bulle = new Image(urlBulle);
+		bulle = new Image(urlBulle);
 
-    	posx = x;
-    	posy = 720 - y;
+		posx = x;
+		posy = 720 - y;
 	}
 
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
@@ -25,7 +25,7 @@ public class Bulle {
 	}
 
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		g.drawImage(bulle,(float) posx,(float) posy);
+		g.drawImage(bulle,posx,posy);
 	}
 
 	public int getPosX(){

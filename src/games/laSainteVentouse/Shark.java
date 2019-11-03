@@ -1,4 +1,4 @@
-package game2;
+package games.laSainteVentouse;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -15,8 +15,8 @@ public class Shark {
 	private Image shark;
 	private Image shark1;
 	private Image shark2;
-	private String urlShark1 = "images/TetrisPolyBridge/requin1.png";
-	private String urlShark2 = "images/TetrisPolyBridge/requin2.png";
+	private String urlShark1 = "images/laSainteVentouse/requin1.png";
+	private String urlShark2 = "images/laSainteVentouse/requin2.png";
 
 	public Shark(int x, int dir) throws SlickException{
 		posx = x;
@@ -51,7 +51,7 @@ public class Shark {
 	}
 
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		g.drawImage(shark,(float) posx,(float) posy);
+		g.drawImage(shark,posx,posy);
 	}
 
 	public int getPosX(){

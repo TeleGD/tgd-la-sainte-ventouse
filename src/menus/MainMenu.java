@@ -1,13 +1,8 @@
 package menus;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Music;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
-
-
 
 public class MainMenu extends Menu{
 
@@ -17,7 +12,7 @@ public class MainMenu extends Menu{
 		super.setTitrePrincipal("TGD - CODING NIGHT DU MEILLEUR BUREAU");
 		super.setTitreSecondaire("CECI EST LE SOUS TITRE SOUS LE TITRE");
 
-		super.setItems(game2.World2.name,"Scores", "Quitter");
+		super.setItems(games.laSainteVentouse.World.GAME_NAME,"Scores", "Quitter");
 
 		super.setEnableClignote(false);
 		super.setCouleurClignote(Color.red);
@@ -33,8 +28,8 @@ public class MainMenu extends Menu{
 	public void onOptionItemSelected(int position) {
 		switch (position) {
 		case 0:
-			game2.World2.reset();
-			game.enterState(game2.World2.ID, new FadeOutTransition(),new FadeInTransition());
+			games.laSainteVentouse.World.reset();
+			game.enterState(games.laSainteVentouse.World.ID, new FadeOutTransition(),new FadeInTransition());
 			break;
 		case 2:
 			System.out.println("exit");

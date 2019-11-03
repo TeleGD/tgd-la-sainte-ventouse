@@ -1,4 +1,4 @@
-package game2;
+package games.laSainteVentouse;
 
 /**		CLASSE DIEU :
  * Classe qui sert à déposer les pièces et à gérer leur rotation
@@ -22,7 +22,7 @@ public class Dieu {
 
 	public Dieu() throws SlickException {
 
-		sprite = new Image("images/TetrisPolyBridge/dieu.png");
+		sprite = new Image("images/laSainteVentouse/dieu.png");
 		x = 360;
 		y = 0;
 		speed = (float) 0.5;
@@ -43,13 +43,13 @@ public class Dieu {
 			for(int i = 0; i < 4; i++){
 				for(int j = 0; j < 4; j++) mat[i][j] = Math.random() > 0.5;
 			}
-			controlledBlock = new Tetris(mat, "images/TetrisPolyBridge/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
+			controlledBlock = new Tetris(mat, "images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
 			controlledBlock.setVy(0);
 
 			for(int i = 0; i < 4; i++){
 				for(int j = 0; j < 4; j++) mat[i][j] = Math.random() > 0.5;
 			}
-			nextBlock = new Tetris(mat, "images/TetrisPolyBridge/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
+			nextBlock = new Tetris(mat, "images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
 
 		} catch (SlickException e) {
 			e.printStackTrace();
@@ -127,7 +127,7 @@ public class Dieu {
 	}
 
 	public void nextBlock() {
-		//Gère le passage à la piàce suivante : génération de la nouvelle pièce, téléportation sous dieu, et changement de la pièce.
+		//Gère le passage à la pièce suivante : génération de la nouvelle pièce, téléportation sous dieu, et changement de la pièce.
 		boolean[][] mat = new boolean[4][4];
 
 		for(int i = 0; i < 4; i++){
@@ -135,13 +135,13 @@ public class Dieu {
 		}
 
 		try {
-			if(controlledBlock.getYcentre()>100)World2.addTetrisList(controlledBlock);
+			if(controlledBlock.getYcentre()>100)World.addTetrisList(controlledBlock);
 			nextBlock.setVy(0);
 			nextBlock.setXcentre((int) (x+16));
 			nextBlock.setYcentre(64);
 			nextBlock.rotate(0);
 			controlledBlock = nextBlock;
-			nextBlock = new Tetris(mat, "images/TetrisPolyBridge/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
+			nextBlock = new Tetris(mat, "images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
 			controlledBlock.setVy(0);
 			controlledBlock.setXcentre((int) (x+16));
 			controlledBlock.rotate(0);
@@ -159,19 +159,19 @@ public class Dieu {
 				if(row == null) continue;
 				for(Block b : row){
 					if(b == null) continue;
-					if(b.getHitbox().intersects(World2.getShape1())){
+					if(b.getHitbox().intersects(World.getShape1())){
 						controlledBlock.setVy(0);
 						drop = false;
 						nextBlock();
 						break;
 					}
-					else if(b.getHitbox().intersects(World2.getShape2())){
+					else if(b.getHitbox().intersects(World.getShape2())){
 						controlledBlock.setVy(0);
 						drop = false;
 						nextBlock();
 						break;
 					}
-					else if(b.getHitbox().intersects(World2.getShape3())){
+					else if(b.getHitbox().intersects(World.getShape3())){
 						controlledBlock.setVy(0);
 						drop = false;
 						nextBlock();
@@ -180,8 +180,8 @@ public class Dieu {
 				}
 			}
 
-			if(World2.getTetrisList().size() >= 1){
-				for(Tetris t : World2.getTetrisList()){
+			if(World.getTetrisList().size() >= 1){
+				for(Tetris t : World.getTetrisList()){
 					if(checkCollision(t)){
 						controlledBlock.setVy(0);
 						drop = false;
@@ -198,7 +198,7 @@ public class Dieu {
 	}
 
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		g.drawImage(sprite,(float) x,(float) y);
+		g.drawImage(sprite,x,y);
 		controlledBlock.render(container,game,g);
 	}
 

@@ -1,6 +1,5 @@
-package game2;
+package games.laSainteVentouse;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -70,7 +69,7 @@ public class Tetris {
 			}
 		}
 		rotate(0);
-    }
+	}
 
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		for (int i=0;i<4;i++) {
