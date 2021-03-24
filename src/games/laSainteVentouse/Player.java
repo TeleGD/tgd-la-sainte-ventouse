@@ -7,16 +7,17 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
+
+import app.AppLoader;
 
 import games.laSainteVentouse.Tetris;
 import games.laSainteVentouse.World;
 
 public class Player {
 
-
+	private World world;
 	private double x ;
 	private double y ;
 	private double jumpSpeed;
@@ -35,7 +36,8 @@ public class Player {
 	private Image image;
 
 
-	public Player (int x,  int y, Shape hitBoxChar){
+	public Player (World world, int x,  int y, Shape hitBoxChar){
+		this.world = world;
 		this.x=x;
 		this.y=y;
 		rightPress = false;
@@ -50,15 +52,10 @@ public class Player {
 		speedY=0.1;
 		jumpSpeed=1;
 		this.hitBoxChar=hitBoxChar;
-		try {
-			image=new Image("images/laSainteVentouse/player.png");
-		} catch (SlickException e) {
-			// nous donne la trace de l'erreur si on ne peut charger l'image correctement
-			e.printStackTrace();
-		}
+		image=AppLoader.loadPicture("/images/laSainteVentouse/player.png");
 	}
 
-	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) {
 		arg2.setColor(Color.green);
 		arg2.drawImage(image, (float)(x-image.getWidth()/2), (float)(y-image.getHeight()/2));
 		arg2.draw(this.hitBoxChar);
@@ -67,7 +64,7 @@ public class Player {
 
 
 
-	public void update(GameContainer arg0, StateBasedGame arg1, int delta) throws SlickException {
+	public void update(GameContainer arg0, StateBasedGame arg1, int delta) {
 		speedY = speedY - gravity*delta;
 		move(delta);
 		collapse(delta);
@@ -115,7 +112,7 @@ public class Player {
 			collapseOn=true;
 			isInJump = false;
 		}
-		tetrisList = World.getTetrisList();
+		tetrisList = this.world.getTetrisList();
 
 		for (int k=0; k < tetrisList.size(); k++){
 			if (Math.abs(tetrisList.get(k).getXcentre()-this.x)<32){

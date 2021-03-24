@@ -2,7 +2,6 @@ package games.laSainteVentouse;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class Tetris {
@@ -14,7 +13,7 @@ public class Tetris {
 	private boolean[][] matBool=new boolean[4][4];
 
 
-	public Tetris(boolean[][] matBool,String adresse) throws SlickException {
+	public Tetris(boolean[][] matBool,String adresse) {
 		this.x=500;
 		for (int i=0;i<4;i++) {
 			for (int j=0;j<4;j++) {
@@ -57,7 +56,7 @@ public class Tetris {
 		}
 	}
 
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+	public void update(GameContainer container, StateBasedGame game, int delta) {
 		ycentre+=delta*vy;
 		xcentre+=delta*vx;
 		for (int i=0;i<4;i++) {
@@ -71,7 +70,7 @@ public class Tetris {
 		rotate(0);
 	}
 
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		for (int i=0;i<4;i++) {
 			for (int j=0;j<4;j++) {
 				if (matBool[i][j]) {

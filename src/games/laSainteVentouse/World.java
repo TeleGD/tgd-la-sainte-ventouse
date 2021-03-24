@@ -1,66 +1,71 @@
 package games.laSainteVentouse;
 
-import general.ui.Button;
-import general.ui.TGDComponent;
-import general.ui.TGDComponent.OnClickListener;
-import menus.MainMenu;
+import java.util.*;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 
-import java.util.*;
+import app.AppLoader;
+import app.ui.Button;
+import app.ui.TGDComponent;
+import app.ui.TGDComponent.OnClickListener;
 
 public class World extends BasicGameState {
-
-	public static int ID=77;
-	public final static String GAME_NAME = "La Sainte Ventouse";
-	private Player player;
-	private Dieu dieu;
 
 	private static Shape shape1;
 	private static Shape shape2;
 	private static Shape shape3;
 
-	private Button jouer,rejouer,retourMenu,quitter;
+	static {
+		World.shape1 = new Rectangle(0,400, 100, 320);
+		World.shape2 = new Rectangle(980, 400, 100, 320);
+		World.shape3 = new Rectangle(100, 572, 880, 148);
+	}
 
-	private Tetris next;
+	private int ID;
+	private int state;
 
-	private static ArrayList<Tetris> tetrisList;
+	private Player player;
+	private Dieu dieu;
+
+	private Button jouer,rejouer,quitter;
+
+	private ArrayList<Tetris> tetrisList;
 	private ArrayList<Cloud> cloudList;
 	private ArrayList<Shark> sharkList;
 	private ArrayList<Bulle> bulleList;
 
 	private int time;
 
-	private boolean gameOn,gameOver;
+	private boolean gameOn;
 
 	private Image fond;
-	private String urlFond = "images/laSainteVentouse/background.png";
+	private String urlFond = "/images/laSainteVentouse/background.png";
 
-	private static Music mainMusic;
+	private Audio mainMusic;
 
-
-	@Override
-	public void init(final GameContainer container, final StateBasedGame game) throws SlickException {
-
-		gameOn = false;
-		gameOver = false;
-
-		mainMusic=new Music("musics/laSainteVentouse/tetris.ogg");
-
-		fond = new Image(urlFond);
-
-
-
+	public World(int ID) {
+		this.ID = ID;
+		this.state = 0;
 	}
 
 	@Override
-	public void enter(final GameContainer container, final StateBasedGame game) throws SlickException {
+	public int getID() {
+		return this.ID;
+	}
+
+	@Override
+	public void init(final GameContainer container, final StateBasedGame game) {
+		/* Méthode exécutée une unique fois au chargement du programme */
+		mainMusic=AppLoader.loadAudio("/musics/laSainteVentouse/tetris.ogg");
+
+		fond = AppLoader.loadPicture(urlFond);
 
 		jouer = new Button("Jouer",container,350,250,TGDComponent.AUTOMATIC,TGDComponent.AUTOMATIC);
 		jouer.setTextSize(32);
@@ -73,11 +78,9 @@ public class World extends BasicGameState {
 			@Override
 			public void onClick(TGDComponent componenent) {
 				startGame();
-
 			}});
 
-
-		rejouer = new Button("Rejouer",container,1104,200,TGDComponent.AUTOMATIC,TGDComponent.AUTOMATIC);
+		rejouer = new Button("Rejouer",container,1104,240,TGDComponent.AUTOMATIC,TGDComponent.AUTOMATIC);
 		rejouer.setTextSize(20);
 		rejouer.setBackgroundColor(new Color(255,255,255));
 		rejouer.setSize(150,50);
@@ -87,32 +90,11 @@ public class World extends BasicGameState {
 
 			@Override
 			public void onClick(TGDComponent componenent) {
-				try {
-					startAgain();
-				} catch (SlickException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
+				initGame();
+				startGame();
 			}});
 
-		retourMenu = new Button("Retour Menu",container,1104,280,TGDComponent.AUTOMATIC,TGDComponent.AUTOMATIC);
-		retourMenu.setTextSize(20);
-		retourMenu.setBackgroundColor(new Color(255,255,255));
-		retourMenu.setSize(150,50);
-		retourMenu.setTextColor(Color.black);
-		retourMenu.setPadding(70,100,70,100);
-		retourMenu.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(TGDComponent componenent) {
-				retour();
-				game.enterState(MainMenu.ID, new FadeOutTransition(),
-						new FadeInTransition());
-
-			}});
-
-		quitter = new Button("Quitter",container,1104,360,TGDComponent.AUTOMATIC,TGDComponent.AUTOMATIC);
+		quitter = new Button("Quitter",container,1104,320,TGDComponent.AUTOMATIC,TGDComponent.AUTOMATIC);
 		quitter.setTextSize(20);
 		quitter.setBackgroundColor(new Color(255,255,255));
 		quitter.setSize(150,50);
@@ -122,57 +104,56 @@ public class World extends BasicGameState {
 
 			@Override
 			public void onClick(TGDComponent componenent) {
-				System.exit(0);
-
+				game.enterState(1 /* Choice */, new FadeOutTransition(), new FadeInTransition());
 			}});
-
 	}
 
-	public void retour(){
-		gameOn = false;
-		mainMusic.stop();
+	@Override
+	public void enter(GameContainer container, StateBasedGame game) {
+		/* Méthode exécutée à l'apparition de la page */
+		if (this.state == 0) {
+			this.play(container, game);
+		} else if (this.state == 2) {
+			this.resume(container, game);
+		}
+	}
+
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) {
+		/* Méthode exécutée à la disparition de la page */
+		if (this.state == 1) {
+			this.pause(container, game);
+		} else if (this.state == 3) {
+			this.stop(container, game);
+			this.state = 0; // TODO: remove
+		}
 	}
 
 	public void startGame(){
 		gameOn = true;
-		try {
-			mainMusic.play();
-			player = new Player(45,400 - 16, new Rectangle(6, 0, 20, 32));
-			dieu = new Dieu();
-
-			tetrisList = new ArrayList<Tetris>();
-			cloudList = new ArrayList<Cloud>();
-			sharkList = new ArrayList<Shark>();
-			sharkList.add(new Shark(110, 1));
-			sharkList.add(new Shark(400, 1));
-			sharkList.add(new Shark(700, 1));
-			sharkList.add(new Shark(300, 0));
-			sharkList.add(new Shark(500, 0));
-			sharkList.add(new Shark(948, 0));
-			bulleList = new ArrayList<Bulle>();
-
-			time = 0;
-			shape1 = new Rectangle(0,400, 100, 320);
-			shape2 = new Rectangle(980, 400, 100, 320);
-			shape3 = new Rectangle(100, 572, 880, 148);
-		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
-	public void startAgain() throws SlickException{
-		gameOn = true;
-		gameOver = false;
-		player = new Player(45,400 - 16, new Rectangle(6, 0, 20, 32));
-		dieu = new Dieu();
+	public void initGame() {
+		gameOn = false;
+		player = new Player(this, 45,400 - 16, new Rectangle(6, 0, 20, 32));
+		dieu = new Dieu(this);
 		tetrisList = new ArrayList<Tetris>();
+		cloudList = new ArrayList<Cloud>();
+		sharkList = new ArrayList<Shark>();
+		sharkList.add(new Shark(110, 1));
+		sharkList.add(new Shark(400, 1));
+		sharkList.add(new Shark(700, 1));
+		sharkList.add(new Shark(300, 0));
+		sharkList.add(new Shark(500, 0));
+		sharkList.add(new Shark(948, 0));
+		bulleList = new ArrayList<Bulle>();
 		time = 0;
-		mainMusic.play();
+		mainMusic.playAsMusic(1f, .3f, true);
 	}
 
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics g) {
+		/* Méthode exécutée environ 60 fois par seconde */
 
 		//fond avec image
 		g.drawImage(fond, 0, 0);
@@ -180,7 +161,7 @@ public class World extends BasicGameState {
 		g.setColor(Color.black);
 		g.fillRect(1080, 0, 1280, 720);
 
-		if (!gameOn && !gameOver){
+		if (!gameOn){
 			jouer.render(container, game, g);
 		}
 
@@ -199,7 +180,6 @@ public class World extends BasicGameState {
 			g.fillRect(1080, 0, 1280, 720);
 
 			rejouer.render(container, game, g);
-			retourMenu.render(container, game, g);
 			quitter.render(container, game, g);
 
 			for(Shark u:sharkList){
@@ -227,7 +207,7 @@ public class World extends BasicGameState {
 			g.drawString(((time/1000)/60)/60 + " h " + (time/1000)/60 + " min " + ((time/1000)%60)%60  + " s", 1130, 90);
 
 			//*
-			next = dieu.getNextBlock();
+			Tetris next = dieu.getNextBlock();
 			next.setXcentre(1150);
 			next.setYcentre(600);
 			next.rotate(0);
@@ -237,7 +217,13 @@ public class World extends BasicGameState {
 	}
 
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+	public void update(GameContainer container, StateBasedGame game, int delta) {
+		/* Méthode exécutée environ 60 fois par seconde */
+		Input input = container.getInput();
+		if (gameOn && input.isKeyDown(Input.KEY_ESCAPE)) {
+			this.setState(1);
+			game.enterState(2, new FadeOutTransition(), new FadeInTransition());
+		}
 		if (gameOn){
 			for(Cloud u:cloudList){
 				if(u.getPosX()>1080){
@@ -288,14 +274,29 @@ public class World extends BasicGameState {
 		}
 	}
 
-	public static void reset() {
-
+	public void play(GameContainer container, StateBasedGame game) {
+		/* Méthode exécutée une unique fois au début du jeu */
+		this.initGame();
 	}
 
-	@Override
-	public int getID() {
-		// TODO Auto-generated method stub
-		return ID;
+	public void pause(GameContainer container, StateBasedGame game) {
+		/* Méthode exécutée lors de la mise en pause du jeu */
+	}
+
+	public void resume(GameContainer container, StateBasedGame game) {
+		/* Méthode exécutée lors de la reprise du jeu */
+	}
+
+	public void stop(GameContainer container, StateBasedGame game) {
+		/* Méthode exécutée une unique fois à la fin du jeu */
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public int getState() {
+		return this.state;
 	}
 
 	@Override
@@ -314,15 +315,15 @@ public class World extends BasicGameState {
 		}
 	}
 
-	public static ArrayList<Tetris> getTetrisList(){
+	public ArrayList<Tetris> getTetrisList(){
 		return tetrisList;
 	}
 
-	public static void addTetrisList(Tetris tet){
+	public void addTetrisList(Tetris tet){
 		tetrisList.add(tet);
 	}
 
-	public static void setTetrisList(ArrayList<Tetris> tetList){
+	public void setTetrisList(ArrayList<Tetris> tetList){
 		tetrisList = tetList;
 	}
 

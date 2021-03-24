@@ -10,19 +10,21 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+
+import app.AppLoader;
 
 public class Dieu {
 	//Classe qui dépose les tetris.
+	private World world;
 	private Image sprite;
 	private boolean left,right,rightLeft,down,up,upDown,rotLeft,rotRight,rotrot,drop;
 	private float x,y,controlledBlockX,controlledBlockY,speed,controlledBlockSpeed;
 	private Tetris controlledBlock,nextBlock;
 
-	public Dieu() throws SlickException {
-
-		sprite = new Image("images/laSainteVentouse/dieu.png");
+	public Dieu(World world) {
+		this.world = world;
+		sprite = AppLoader.loadPicture("/images/laSainteVentouse/dieu.png");
 		x = 360;
 		y = 0;
 		speed = (float) 0.5;
@@ -38,22 +40,17 @@ public class Dieu {
 		drop = false;
 		boolean[][] mat = new boolean[4][4];
 
-		try {
-			//Génération de la pièce de départ et de la suivante
-			for(int i = 0; i < 4; i++){
-				for(int j = 0; j < 4; j++) mat[i][j] = Math.random() > 0.5;
-			}
-			controlledBlock = new Tetris(mat, "images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
-			controlledBlock.setVy(0);
-
-			for(int i = 0; i < 4; i++){
-				for(int j = 0; j < 4; j++) mat[i][j] = Math.random() > 0.5;
-			}
-			nextBlock = new Tetris(mat, "images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
-
-		} catch (SlickException e) {
-			e.printStackTrace();
+		//Génération de la pièce de départ et de la suivante
+		for(int i = 0; i < 4; i++){
+			for(int j = 0; j < 4; j++) mat[i][j] = Math.random() > 0.5;
 		}
+		controlledBlock = new Tetris(mat, "/images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
+		controlledBlock.setVy(0);
+
+		for(int i = 0; i < 4; i++){
+			for(int j = 0; j < 4; j++) mat[i][j] = Math.random() > 0.5;
+		}
+		nextBlock = new Tetris(mat, "/images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
 
 		//Téléportation de la première pièce générée sous dieu.
 		//Pour une raison qui m'échappe, le rotate téléporte la hitbox au bon endroit (aka autour du centre qu'on vient de définir)
@@ -134,23 +131,19 @@ public class Dieu {
 			for(int j = 0; j < 4; j++) mat[i][j] = Math.random() > 0.5;
 		}
 
-		try {
-			if(controlledBlock.getYcentre()>100)World.addTetrisList(controlledBlock);
-			nextBlock.setVy(0);
-			nextBlock.setXcentre((int) (x+16));
-			nextBlock.setYcentre(64);
-			nextBlock.rotate(0);
-			controlledBlock = nextBlock;
-			nextBlock = new Tetris(mat, "images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
-			controlledBlock.setVy(0);
-			controlledBlock.setXcentre((int) (x+16));
-			controlledBlock.rotate(0);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+		if(controlledBlock.getYcentre()>100)this.world.addTetrisList(controlledBlock);
+		nextBlock.setVy(0);
+		nextBlock.setXcentre((int) (x+16));
+		nextBlock.setYcentre(64);
+		nextBlock.rotate(0);
+		controlledBlock = nextBlock;
+		nextBlock = new Tetris(mat, "/images/laSainteVentouse/Bloc"+(int)Math.floor(1+7*Math.random())+randomCat()+".png");
+		controlledBlock.setVy(0);
+		controlledBlock.setXcentre((int) (x+16));
+		controlledBlock.rotate(0);
 	}
 
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+	public void update(GameContainer container, StateBasedGame game, int delta) {
 		move(delta);
 
 		if(drop){
@@ -180,8 +173,8 @@ public class Dieu {
 				}
 			}
 
-			if(World.getTetrisList().size() >= 1){
-				for(Tetris t : World.getTetrisList()){
+			if(this.world.getTetrisList().size() >= 1){
+				for(Tetris t : this.world.getTetrisList()){
 					if(checkCollision(t)){
 						controlledBlock.setVy(0);
 						drop = false;
@@ -197,7 +190,7 @@ public class Dieu {
 
 	}
 
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		g.drawImage(sprite,x,y);
 		controlledBlock.render(container,game,g);
 	}

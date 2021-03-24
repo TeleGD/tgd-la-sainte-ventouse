@@ -3,11 +3,12 @@ package games.laSainteVentouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.state.StateBasedGame;
+
+import app.AppLoader;
 
 public class Block {
 	//au centre du block
@@ -21,22 +22,22 @@ public class Block {
 	//sprite
 	private Image sprite;
 
-	public Block(String url,int x, int y) throws SlickException{
+	public Block(String url,int x, int y) {
 		posx = x;
 		posy = y;
 		hitbox = new Rectangle(posx-16,posy-16,32,32);
-		sprite = new Image(url);
+		sprite = AppLoader.loadPicture(url);
 		angle = 0;
 		vitx = 0;
 		vity=0;
 	}
 
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+	public void update(GameContainer container, StateBasedGame game, int delta) {
 		posy+=delta*vity;
 		posx+=delta*vitx;
 	}
 
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		sprite.rotate((float) angle);
 		g.drawImage(sprite,posx,posy);
 		sprite.rotate((float) -angle);
@@ -94,8 +95,8 @@ public class Block {
 		posy = y;
 	}
 
-	public void setSprite(String url) throws SlickException{
-		sprite = new Image(url);
+	public void setSprite(String url) {
+		sprite = AppLoader.loadPicture(url);
 	}
 
 	public void setAngle(double ang){

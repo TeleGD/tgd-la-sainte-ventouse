@@ -3,8 +3,9 @@ package games.laSainteVentouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+
+import app.AppLoader;
 
 public class Shark {
 	private int posx;
@@ -15,17 +16,17 @@ public class Shark {
 	private Image shark;
 	private Image shark1;
 	private Image shark2;
-	private String urlShark1 = "images/laSainteVentouse/requin1.png";
-	private String urlShark2 = "images/laSainteVentouse/requin2.png";
+	private String urlShark1 = "/images/laSainteVentouse/requin1.png";
+	private String urlShark2 = "/images/laSainteVentouse/requin2.png";
 
-	public Shark(int x, int dir) throws SlickException{
+	public Shark(int x, int dir) {
 		posx = x;
 		posy = 652-32;
 		sens = dir;
 		speed = 0.05+Math.random()*0.2;
 
-		shark1 = new Image(urlShark1);
-		shark2 = new Image(urlShark2);
+		shark1 = AppLoader.loadPicture(urlShark1);
+		shark2 = AppLoader.loadPicture(urlShark2);
 
 		if(dir == 1){
 			shark = shark1;
@@ -34,7 +35,7 @@ public class Shark {
 		}
 	}
 
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+	public void update(GameContainer container, StateBasedGame game, int delta) {
 		if(sens == 1){
 			posx += delta*speed;
 			if(posx>980-32){
@@ -50,7 +51,7 @@ public class Shark {
 		}
 	}
 
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		g.drawImage(shark,posx,posy);
 	}
 
